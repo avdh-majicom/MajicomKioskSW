@@ -76,7 +76,7 @@ Two implementation caveats matter when reading or editing EEPROM values:
 - end-of-day recirculation and backwash durations are not stored in the current EEPROM layout and currently fall back to fixed compatibility values
 
 For the full field-by-field breakdown, see
-[`docs/EEPROM_RUNTIME_USAGE_SUMMARY.md`](docs/EEPROM_RUNTIME_USAGE_SUMMARY.md).
+[`docs/EEPROM_RUNTIME_USAGE_SUMMARY.md`](Kiosk-main-SWID2604281833T/Kiosk-main/docs/EEPROM_RUNTIME_USAGE_SUMMARY.md).
 
 ## Build Target
 
