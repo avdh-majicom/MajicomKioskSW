@@ -1,0 +1,72 @@
+digraph KIOSK_UI_MAIN_STATE_MACHINE {
+  rankdir=LR;
+  graph [fontsize=10, fontname="Helvetica", labelloc=t, label="Kiosk Main UI State Machine (Code-Accurate)"];
+  node  [shape=box, style="rounded", fontsize=10, fontname="Helvetica"];
+  edge  [fontsize=9, fontname="Helvetica"];
+
+  UI_BOOT;
+  UI_WELCOME;
+  UI_PAY_PROMPT;
+  UI_PAY_FAILED;
+  UI_PAY_COIN_OK;
+  UI_PAY_APP_OK;
+  UI_PAY_TOKEN_OK;
+  UI_PAY_TOKEN_BAD;
+  UI_OVERRIDE;
+  UI_DISP_RDY;
+  UI_DISPENSING;
+  UI_DISP_DONE;
+  UI_TIMEOUT;
+  UI_OUT_OF_SERVICE;
+  UI_DARK_MODE_IN;
+  UI_DARK_MODE_OUT;
+  UI_ERROR;
+
+  RESET_EVENT [shape=oval, style="dashed", label="RESET_EVENT"];
+  ASYNC_ERROR [shape=oval, style="dashed", label="errorActive() from\nnon-dark states"];
+
+  UI_BOOT -> UI_WELCOME [label="front press OR 60s"];
+
+  UI_WELCOME -> UI_PAY_PROMPT [label="front press+release (normal)"];
+  UI_WELCOME -> UI_OVERRIDE [label="front release with override=ON"];
+  UI_WELCOME -> UI_DARK_MODE_IN [label="press in override, release with override=OFF"];
+  UI_WELCOME -> UI_OUT_OF_SERVICE [label="dispenseNotOk && !override && !darkModeArmed"];
+  UI_WELCOME -> UI_WELCOME [label="5s refresh"];
+
+  UI_PAY_PROMPT -> UI_OVERRIDE [label="override becomes active"];
+  UI_PAY_PROMPT -> UI_PAY_COIN_OK [label="coin payment ok"];
+  UI_PAY_PROMPT -> UI_PAY_APP_OK [label="app payment ok"];
+  UI_PAY_PROMPT -> UI_PAY_TOKEN_OK [label="token payment ok"];
+  UI_PAY_PROMPT -> UI_PAY_TOKEN_BAD [label="invalid token"];
+  UI_PAY_PROMPT -> UI_PAY_FAILED [label="payment failed"];
+  UI_PAY_PROMPT -> UI_WELCOME [label="15s timeout"];
+
+  UI_PAY_FAILED -> UI_PAY_PROMPT [label="front press"];
+  UI_PAY_FAILED -> UI_WELCOME [label="15s timeout"];
+
+  UI_PAY_TOKEN_BAD -> UI_WELCOME [label="front press OR 3s"];
+
+  UI_PAY_COIN_OK -> UI_DISP_RDY [label="2s"];
+  UI_PAY_APP_OK -> UI_DISP_RDY [label="2s"];
+  UI_PAY_TOKEN_OK -> UI_DISP_RDY [label="2s"];
+
+  UI_OVERRIDE -> UI_DISP_RDY [label="2s (override count incremented)"];
+
+  UI_DISP_RDY -> UI_DISPENSING [label="front/rear dispense press"];
+  UI_DISP_RDY -> UI_TIMEOUT [label="60s"];
+
+  UI_DISPENSING -> UI_DISP_DONE [label="dispense complete"];
+  UI_DISP_DONE -> UI_WELCOME [label="front press OR 2s"];
+  UI_TIMEOUT -> UI_WELCOME [label="3s"];
+
+  UI_OUT_OF_SERVICE -> UI_WELCOME [label="dispense restored OR override ON"];
+
+  UI_DARK_MODE_IN -> UI_DARK_MODE_IN [label="front press during 60s countdown: skip wait"];
+  UI_DARK_MODE_IN -> UI_DARK_MODE_OUT [label="front press when fully dark"];
+  UI_DARK_MODE_OUT -> UI_DARK_MODE_IN [label="front released before 8s"];
+  UI_DARK_MODE_OUT -> RESET_EVENT [label="hold front >= 8s"];
+
+  ASYNC_ERROR -> UI_ERROR [style=dashed, label="enter UI_ERROR"];
+  UI_ERROR -> UI_ERROR [label="1s flashing refresh loop"];
+}
+

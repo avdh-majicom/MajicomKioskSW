@@ -1,0 +1,73 @@
+digraph HydraulicsFlowPanels {
+  rankdir=TB;
+  graph [overlap=false, splines=true];
+  node [shape=box, style="rounded"];
+
+  subgraph cluster_dispense {
+    label="Dispense flow";
+    color="#4a4a4a";
+
+    d_start [label="Start tick"];
+    d_edge [label="dispenseStart edge?"];
+    d_check [label="waterLevel > 0?"];
+    d_enter [label="Enter DISPENSE"];
+    d_disp [label="Dispense active\n(wantDispense = true)"];
+    d_elapsed [label="elapsed >= 5s?"];
+    d_done [label="Stop dispense\nreturn IDLE\nincrement count"];
+    d_idle [label="Remain IDLE"];
+
+    d_start -> d_edge;
+    d_edge -> d_idle [label="no"];
+    d_edge -> d_check [label="yes"];
+    d_check -> d_idle [label="no"];
+    d_check -> d_enter [label="yes"];
+    d_enter -> d_disp;
+    d_disp -> d_elapsed;
+    d_elapsed -> d_disp [label="no"];
+    d_elapsed -> d_done [label="yes"];
+  }
+
+  subgraph cluster_backwash {
+    label="Backwash flow";
+    color="#4a4a4a";
+
+    b_start [label="Start tick"];
+    b_req [label="requestBackwash latched?"];
+    b_active [label="backwash active?"];
+    b_start_cond [label="waterLevel > 1\nOR (override && waterLevel > 0)"];
+    b_start_bw [label="Start backwash\n(reset count)"];
+    b_cancel [label="Cancel backwash"];
+    b_checks [label="If active:\n- elapsed >= 5s?\n- waterLevel < 1?"];
+    b_stop [label="Stop backwash"];
+    b_continue [label="Continue backwash"];
+    b_noop [label="No change"];
+
+    b_start -> b_req;
+    b_req -> b_active [label="no"];
+    b_req -> b_active [label="yes"];
+
+    b_active -> b_start_cond [label="not active"];
+    b_active -> b_cancel [label="active"];
+    b_start_cond -> b_start_bw [label="true"];
+    b_start_cond -> b_noop [label="false"];
+
+    b_start_bw -> b_checks;
+    b_cancel -> b_checks;
+    b_noop -> b_checks;
+    b_checks -> b_stop [label="yes"];
+    b_checks -> b_continue [label="no"];
+  }
+
+  subgraph cluster_fill {
+    label="Fill flow";
+    color="#4a4a4a";
+
+    f_start [label="Start tick"];
+    f_level [label="Read waterLevel (0..3)"];
+    f_auto [label="Auto-refill latch:\n- level < 2 -> ON\n- level == 3 -> OFF"];
+    f_manual [label="Manual latch:\n- if level == 3 -> OFF\n- else if inletRequested && !backwash -> ON"];
+    f_demand [label="wantInlet =\n(autoRefill || manualLatch)\n&& !backwashActive"];
+
+    f_start -> f_level -> f_auto -> f_manual -> f_demand;
+  }
+}

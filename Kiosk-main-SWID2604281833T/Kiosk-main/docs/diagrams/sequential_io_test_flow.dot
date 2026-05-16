@@ -1,0 +1,26 @@
+digraph SEQ_IO_TEST_FLOW {
+  rankdir=TB;
+  splines=polyline;
+  fontname="Helvetica";
+  node [shape=box, style="rounded,filled", fillcolor="#F8FAFC", color="#334155", fontname="Helvetica", fontsize=10];
+  edge [color="#475569", arrowsize=0.7, fontname="Helvetica", fontsize=9];
+
+  Boot [label="Power On / Reset"];
+  Chord [label="Hold Boot Chord:\nBTN_OZONE_CTL OR BTN_CONT_CIRC\n(active-low)"];
+  Prompt [label="Release Prompt Screen\n(wait until invocation buttons released)"];
+  Main [label="Sequential I/O Test Main Loop"];
+  Active [label="Single Active Output\n(all others forced OFF)"];
+  Next [label="NEXT key press:\nBTN_OZONE_CTL / BTN_CONT_DISP / BTN_CONT_CIRC"];
+  Prev [label="PREV key press:\nBTN_WATER_INLET"];
+  Klaran [label="If active output = Klaran UV:\n15s countdown then force OFF"];
+  Inputs [label="Update live telemetry lines:\nSW, Btn, Float, Temp, Level, Klaran OK"];
+  Exit [label="Exit only by reset / power cycle"];
+
+  Boot -> Chord -> Prompt -> Main;
+  Main -> Active;
+  Active -> Klaran;
+  Active -> Inputs;
+  Main -> Next -> Active;
+  Main -> Prev -> Active;
+  Main -> Exit [style=dashed];
+}

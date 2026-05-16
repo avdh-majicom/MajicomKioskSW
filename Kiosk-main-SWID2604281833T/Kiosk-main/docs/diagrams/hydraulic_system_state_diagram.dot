@@ -1,0 +1,80 @@
+digraph HydraulicSystem {
+  rankdir=LR;
+  splines=true;
+  nodesep=0.35;
+  ranksep=0.6;
+  fontname="Helvetica";
+  labelloc="t";
+  label="Kiosk Hydraulic System - Functional State Diagram";
+
+  node [shape=box, style="rounded", fontname="Helvetica", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+
+  start [shape=circle, label="", width=0.18, height=0.18];
+
+  subgraph cluster_dispense {
+    label="Dispense FSM (KioskHydraulics)";
+    color="#7aa6c2";
+
+    D_IDLE [label="D_IDLE\n(no dispense output)"];
+    D_ON   [label="D_DISPENSING\n(dispense solenoid+pump ON)"];
+
+    D_IDLE -> D_ON [label="dispense edge && waterLevel>0"];
+    D_ON -> D_IDLE [label="done by time mode\nor pulse-count mode"];
+  }
+
+  subgraph cluster_backwash {
+    label="Backwash Overlay";
+    color="#c28a7a";
+
+    BW_OFF [label="BW_OFF"];
+    BW_ON  [label="BW_ON\n(backwash output ON)"];
+    BW_PEND [label="BW_PENDING\n(waiting for sensor bypass clear)"];
+
+    BW_OFF -> BW_ON [label="request && eligible\nnormal: WL>1\noverride: WL>0"];
+    BW_OFF -> BW_PEND [label="request while sensor bypass ON"];
+    BW_PEND -> BW_ON [label="sensor bypass clears\n&& eligibility still true"];
+
+    BW_ON -> BW_OFF [label="duration elapsed"];
+    BW_ON -> BW_OFF [label="waterLevel < 1"];
+    BW_ON -> BW_OFF [label="request again (cancel)"];
+  }
+
+  subgraph cluster_inlet {
+    label="Water Inlet Control";
+    color="#88b07f";
+
+    I_OFF [label="INLET_OFF"];
+    I_ON  [label="INLET_ON"];
+
+    I_OFF -> I_ON [label="inletDemand=true\n(autoRefill||manualOn) && !manualOff\n&& BW_OFF && !sensorBypass"];
+    I_ON -> I_OFF [label="WL==FULL (3)"];
+    I_ON -> I_OFF [label="BW_ON (forced off)"];
+    I_ON -> I_OFF [label="sensorBypass ON"];
+    I_ON -> I_OFF [label="manualOff latch"];
+  }
+
+  subgraph cluster_latches {
+    label="Demand/Latch Logic";
+    color="#b0b0b0";
+
+    L_AUTO [label="Auto-refill latch\nON when WL<2\nOFF when WL==3"];
+    L_MAN [label="Manual inlet latch\nset by inlet toggle\nclears at WL==3"];
+    L_DEM [label="inletDemand\n(autoRefill||manualOn)&&!manualOff"];
+
+    L_AUTO -> L_DEM;
+    L_MAN -> L_DEM;
+  }
+
+  start -> D_IDLE;
+  start -> BW_OFF;
+  start -> I_OFF;
+
+  BW_ON -> I_OFF [style=dashed, label="inlet forced OFF"];
+  BW_OFF -> I_ON [style=dashed, label="can allow inlet"];
+  D_ON -> BW_ON [style=dashed, label="concurrent allowed"];
+  BW_ON -> D_ON [style=dashed, label="concurrent allowed"];
+
+  RTC [shape=note, label="Daily RTC backwash trigger\nonly within first hour\nafter configured daily time\n(plus eligibility checks)"];
+  RTC -> BW_ON [style=dotted, label="requestBackwashWithDuration"];
+}

@@ -1,0 +1,30 @@
+digraph KIOSK_PERIODIC_FLUSH {
+  rankdir=LR;
+  graph [fontsize=10, fontname="Helvetica", labelloc=t, label="Periodic Nozzle Flush (DNF) State Machine"];
+  node  [shape=box, style="rounded", fontsize=10, fontname="Helvetica"];
+  edge  [fontsize=9, fontname="Helvetica"];
+
+  IDLE [label="IDLE"];
+  BEEP_ON [label="BEEP_ON"];
+  BEEP_PERIOD [label="BEEP_PERIOD_WAIT"];
+  PRE_DELAY [label="PRE_FLUSH_DELAY"];
+  WAIT_DISP [label="WAIT_DISPENSE_START"];
+  DISP_IN_FLIGHT [label="DNF_DISPENSE_IN_FLIGHT"];
+
+  IDLE -> IDLE [label="armed only in UI_WELCOME\nand not dark mode/dayEnd"];
+  IDLE -> BEEP_ON [label="DNF period elapsed\nand config valid\nand not already dispensing"];
+
+  BEEP_ON -> BEEP_PERIOD [label="beep on-time elapsed,\nremaining beeps > 0"];
+  BEEP_PERIOD -> BEEP_ON [label="beep period elapsed"];
+  BEEP_ON -> PRE_DELAY [label="last beep done\nand now < due+preDelay"];
+  BEEP_ON -> WAIT_DISP [label="last beep done\nand now >= due+preDelay"];
+  PRE_DELAY -> WAIT_DISP [label="pre-delay elapsed"];
+
+  WAIT_DISP -> DISP_IN_FLIGHT [label="dispense path free,\nrequest timed dispense\nDNF duration"];
+  DISP_IN_FLIGHT -> IDLE [label="dispense complete"];
+
+  BEEP_ON -> IDLE [style=dashed, label="cancel on invalid config,\nleave UI_WELCOME,\ndark mode, dayEnd,\nor non-periodic dispense"];
+  BEEP_PERIOD -> IDLE [style=dashed, label="same cancel conditions"];
+  PRE_DELAY -> IDLE [style=dashed, label="same cancel conditions"];
+  WAIT_DISP -> IDLE [style=dashed, label="same cancel conditions"];
+}

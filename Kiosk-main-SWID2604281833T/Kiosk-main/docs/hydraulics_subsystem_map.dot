@@ -1,0 +1,51 @@
+digraph KioskHydraulicsSubsystem {
+  rankdir=LR;
+  splines=true;
+  nodesep=0.35;
+  ranksep=0.5;
+  node [shape=box, fontname="Helvetica", fontsize=10, labeljust="l"];
+  edge [fontname="Helvetica", fontsize=9];
+
+  subgraph cluster_inputs {
+    label="Inputs";
+    color="#4a4a4a";
+    btns [label="Buttons\l- Backwash\l- Water Inlet\l- Front/Rear Dispense\l- Cont Dispense\l- Sensor Bypass\l"];
+    sensors [label="Sensors\l- Water level (0..3)\l- Flow pulses\l"];
+    override [label="Override switch\l"];
+    rtc [label="RTC (DS3231)\l- Time of day\l"];
+    eeprom [label="EEPROM\l- Dispense profile\l- Backwash duration\l- Daily backwash time/duration\l"];
+  }
+
+  subgraph cluster_behavior {
+    label="KioskBehavior::updateHydraulics";
+    color="#4a4a4a";
+    behavior [label="Policy + gating\l- Auto-refill latch\l- Manual inlet latch\l- Sensor bypass toggle\l- Dispense start gating\l- Backwash requests\l  (button + daily schedule)\l- Set dispense profile from EEPROM\l"];
+  }
+
+  subgraph cluster_hydraulics {
+    label="KioskHydraulics::update";
+    color="#4a4a4a";
+    hyd [label="Hydraulics state machine\l- Dispense state (IDLE/DISPENSE)\l- Backwash overlay\l- Auto-refill latch\l- Inlet suppression during backwash\l"];
+  }
+
+  subgraph cluster_io {
+    label="KioskIO";
+    color="#4a4a4a";
+    io [label="Actuator writes + service\l- setBackwash (solenoid+pump)\l- setWaterInlet (solenoid+pump)\l- setWaterDispense (solenoid+pump)\l- setSensorBypass (solenoid)\l- inlet kick/hold timing\l"];
+  }
+
+  btns -> behavior;
+  sensors -> behavior;
+  sensors -> hyd;
+  override -> behavior;
+  rtc -> behavior [style=dashed, xlabel="daily schedule"];
+  eeprom -> behavior;
+  eeprom -> hyd [style=dashed, xlabel="default duration"];
+
+  behavior -> hyd [xlabel="dispenseStart/backwashReq"];
+  behavior -> io [xlabel="final inlet + bypass"];
+  hyd -> io [xlabel="backwash/dispense/inlet"];
+
+  note [shape=note, label="Daily backwash triggers only if RTC present.\lHydraulics has an override flag,\lbut Behavior gates backwash requests.\l"];
+  behavior -> note [style=dashed];
+}

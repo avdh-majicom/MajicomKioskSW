@@ -1,0 +1,33 @@
+digraph EEPROM_EDITOR_SAVE_MODEL {
+  rankdir=TB;
+  splines=ortho;
+  nodesep=0.5;
+  ranksep=0.55;
+  fontname="Helvetica";
+  node [shape=box, style="rounded,filled", fillcolor="#F8FAFC", color="#334155", fontname="Helvetica", fontsize=10];
+  edge [color="#475569", arrowsize=0.7, fontname="Helvetica", fontsize=9];
+
+  Enter [label="Enter Menu / Edit Layer"];
+  Cache [label="Load Current EEPROM/RTC\nvalues into cache"];
+  Adjust [label="UP/DOWN modifies cache\n(dirty = true)"];
+  ShortSel [label="Short SELECT"];
+  LongSel [label="Long SELECT (~3s)"];
+  Back [label="Short BACK"];
+  RtcNext [label="RTC only:\nwrite RTC on field advance"];
+  Save [label="saveIfDirtyForLayer()\ncommit writes"];
+  Saved [label="Show status:\n'Saving....' -> 'Saved !!'"];
+  Exit [label="Return to menu"];
+
+  Enter -> Cache -> Adjust;
+  Adjust -> ShortSel;
+  Adjust -> LongSel;
+  Adjust -> Back;
+
+  ShortSel -> RtcNext [label="if RTC Config"];
+  ShortSel -> Adjust [label="other layers:\nadvance/toggle only"];
+  RtcNext -> Adjust [label="next RTC field"];
+
+  LongSel -> Save;
+  Back -> Save [label="when leaving edit layer"];
+  Save -> Saved -> Exit;
+}

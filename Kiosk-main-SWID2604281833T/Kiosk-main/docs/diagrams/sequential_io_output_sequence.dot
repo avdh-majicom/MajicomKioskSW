@@ -1,0 +1,21 @@
+digraph SEQ_IO_OUTPUT_SEQUENCE {
+  rankdir=LR;
+  splines=polyline;
+  fontname="Helvetica";
+  node [shape=box, style="rounded,filled", fillcolor="#F8FAFC", color="#334155", fontname="Helvetica", fontsize=10];
+  edge [color="#475569", arrowsize=0.7, fontname="Helvetica", fontsize=9];
+
+  Start [label="Shared sequence (all HWIDs)\n1 Dispense Button LED\n2 Backwash Sol\n3 Backwash Pump\n4 WaterSenseByp Sol\n5 InletBoostPump\n6 Inlet Sol PWM\n7 Dispense Pump\n8 Dispense Sol"];
+  Branch [shape=diamond, style="filled", fillcolor="#E2E8F0", label="HWID < 3 ?"];
+
+  Less3 [label="Continue:\n9 Klaran UV\n10 External UV\n11 Ozone"];
+  Ge3 [label="Continue:\n9 Coin Acceptor\n10 Ext Relay 2\n11 Ext Relay 1\n12 Generic UV\n13 Klaran UV"];
+
+  End [label="Behavior\n- One output active at a time\n- PWM outputs: 255 duty\n- Digital outputs: HIGH"];
+
+  Start -> Branch;
+  Branch -> Less3 [label="Yes"];
+  Branch -> Ge3 [label="No"];
+  Less3 -> End;
+  Ge3 -> End;
+}

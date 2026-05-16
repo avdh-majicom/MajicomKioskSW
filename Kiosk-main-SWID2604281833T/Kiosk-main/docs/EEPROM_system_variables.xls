@@ -1,0 +1,74 @@
+<html><head><meta charset='utf-8'></head><body>
+<h2>Kiosk EEPROM System Variables (excluding NFC token/tag table)</h2>
+<p>Source: KioskEepromLayout.h + KioskEeprom.cpp/h. Reset defaults refer to full EEPROM reset (reinitializeToDefaults(true)).</p>
+<table border='1' cellspacing='0' cellpadding='4'>
+<tr><th>Category</th><th>Variable</th><th>EEPROM Address</th><th>Type</th><th>Stored Range</th><th>Units / LSB</th><th>Effective Range</th><th>Reset Default (raw)</th><th>Reset Default (effective)</th><th>Notes</th></tr>
+<tr><td>Core</td><td>HWID</td><td>0</td><td>uint8</td><td>0..255</td><td>raw</td><td>0..255</td><td>0</td><td>0</td><td>Hardware ID</td></tr>
+<tr><td>Dispense Profile</td><td>Measured Duration</td><td>1-2</td><td>uint16</td><td>0..65535</td><td>100ms/LSB</td><td>0..6553.5s</td><td>200</td><td>20.0s</td><td>ADDR_DISP_DURATION100MS</td></tr>
+<tr><td>Dispense Profile</td><td>Measured Pulses</td><td>3-4</td><td>uint16</td><td>0..65535</td><td>pulses</td><td>0..65535</td><td>2000</td><td>2000</td><td>ADDR_DISP_PULSES</td></tr>
+<tr><td>Dispense Profile</td><td>Dispense Mode</td><td>5</td><td>uint8</td><td>0..255</td><td>enum</td><td>0=time,1=pulses</td><td>0</td><td>TIME</td><td>ADDR_DISP_MODESEL</td></tr>
+<tr><td>Solenoid BackWash</td><td>Start PWM</td><td>10</td><td>uint8</td><td>0..255</td><td>PWM</td><td>0..255</td><td>255</td><td>255</td><td></td></tr>
+<tr><td>Solenoid BackWash</td><td>Hold PWM</td><td>11</td><td>uint8</td><td>0..255</td><td>PWM</td><td>0..255</td><td>130</td><td>130</td><td></td></tr>
+<tr><td>Solenoid BackWash</td><td>SW Delay</td><td>12</td><td>uint8</td><td>0..255</td><td>seconds</td><td>0..255s</td><td>5</td><td>5s</td><td></td></tr>
+<tr><td>Solenoid BackWash</td><td>Reserved0</td><td>13</td><td>uint8</td><td>0..255</td><td>raw</td><td>0..255</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Solenoid BackWash</td><td>Reserved1</td><td>int8 @14</td><td>int8</td><td>-128..127</td><td>raw</td><td>-128..127</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Solenoid SenseByp</td><td>Start PWM</td><td>15</td><td>uint8</td><td>0..255</td><td>PWM</td><td>0..255</td><td>255</td><td>255</td><td></td></tr>
+<tr><td>Solenoid SenseByp</td><td>Hold PWM</td><td>16</td><td>uint8</td><td>0..255</td><td>PWM</td><td>0..255</td><td>130</td><td>130</td><td></td></tr>
+<tr><td>Solenoid SenseByp</td><td>SW Delay</td><td>17</td><td>uint8</td><td>0..255</td><td>seconds</td><td>0..255s</td><td>5</td><td>5s</td><td></td></tr>
+<tr><td>Solenoid SenseByp</td><td>Reserved0</td><td>18</td><td>uint8</td><td>0..255</td><td>raw</td><td>0..255</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Solenoid SenseByp</td><td>Reserved1</td><td>int8 @19</td><td>int8</td><td>-128..127</td><td>raw</td><td>-128..127</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Solenoid Inlet</td><td>Start PWM</td><td>20</td><td>uint8</td><td>0..255</td><td>PWM</td><td>0..255</td><td>255</td><td>255</td><td></td></tr>
+<tr><td>Solenoid Inlet</td><td>Hold PWM</td><td>21</td><td>uint8</td><td>0..255</td><td>PWM</td><td>0..255</td><td>130</td><td>130</td><td></td></tr>
+<tr><td>Solenoid Inlet</td><td>SW Delay</td><td>22</td><td>uint8</td><td>0..255</td><td>seconds</td><td>0..255s</td><td>5</td><td>5s</td><td></td></tr>
+<tr><td>Solenoid Inlet</td><td>Reserved0</td><td>23</td><td>uint8</td><td>0..255</td><td>raw</td><td>0..255</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Solenoid Inlet</td><td>Reserved1</td><td>int8 @24</td><td>int8</td><td>-128..127</td><td>raw</td><td>-128..127</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Solenoid Dispense</td><td>Start PWM</td><td>25</td><td>uint8</td><td>0..255</td><td>PWM</td><td>0..255</td><td>128</td><td>128</td><td></td></tr>
+<tr><td>Solenoid Dispense</td><td>Hold PWM</td><td>26</td><td>uint8</td><td>0..255</td><td>PWM</td><td>0..255</td><td>100</td><td>100</td><td></td></tr>
+<tr><td>Solenoid Dispense</td><td>SW Delay</td><td>27</td><td>uint8</td><td>0..255</td><td>seconds</td><td>0..255s</td><td>5</td><td>5s</td><td></td></tr>
+<tr><td>Solenoid Dispense</td><td>Reserved0</td><td>28</td><td>uint8</td><td>0..255</td><td>raw</td><td>0..255</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Solenoid Dispense</td><td>Reserved1</td><td>int8 @29</td><td>int8</td><td>-128..127</td><td>raw</td><td>-128..127</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Backwash</td><td>Deprecated BW Freq</td><td>30</td><td>uint8</td><td>0..255</td><td>deprecated</td><td>unused</td><td>0</td><td>0</td><td>reserved/unused</td></tr>
+<tr><td>Backwash</td><td>BW AutoDuration</td><td>31</td><td>uint8</td><td>0..255</td><td>5s/LSB</td><td>0..1275s</td><td>0</td><td>disabled</td><td>0 disables default-duration backwash</td></tr>
+<tr><td>Backwash</td><td>BW AutoAfter N</td><td>32</td><td>uint8</td><td>0..255</td><td>count</td><td>0..255</td><td>0</td><td>0</td><td>0 disables</td></tr>
+<tr><td>Backwash</td><td>BW Disp Counter</td><td>33-34</td><td>uint16</td><td>0..65535</td><td>count</td><td>0..65535</td><td>0</td><td>0</td><td></td></tr>
+<tr><td>KlaranUV</td><td>UV OK Delay</td><td>37</td><td>uint8</td><td>0..255</td><td>10ms/LSB</td><td>0..2550ms</td><td>150</td><td>1500ms</td><td></td></tr>
+<tr><td>KlaranUV</td><td>UV MAX ON Time</td><td>38</td><td>uint8</td><td>0..255</td><td>minutes</td><td>0..255m</td><td>60</td><td>60m</td><td></td></tr>
+<tr><td>General</td><td>Water Temp Sensor</td><td>39</td><td>uint8</td><td>1..2 (clamped)</td><td>enum</td><td>1=T1,2=T2</td><td>1</td><td>T1</td><td>invalid values clamp to 1</td></tr>
+<tr><td>NFC Timing</td><td>NFC Init Delay</td><td>40</td><td>uint8</td><td>10..250 (clamped)</td><td>1ms/LSB</td><td>10..250ms</td><td>100</td><td>100ms</td><td>NFC tags excluded per request</td></tr>
+<tr><td>NFC Timing</td><td>NFC Scan Duration</td><td>41</td><td>uint8</td><td>1..250 (stored), 10..2500ms API</td><td>10ms/LSB</td><td>10..2500ms</td><td>15</td><td>150ms</td><td></td></tr>
+<tr><td>NFC Timing</td><td>NFC Inter Delay</td><td>42</td><td>uint8</td><td>10..250 (clamped)</td><td>1ms/LSB</td><td>10..250ms</td><td>50</td><td>50ms</td><td></td></tr>
+<tr><td>Backwash Daily</td><td>Daily BW Time</td><td>43-44</td><td>uint16</td><td>0..1439 (clamped)</td><td>minutes since midnight</td><td>00:00..23:59</td><td>60</td><td>01:00</td><td></td></tr>
+<tr><td>Backwash Daily</td><td>Daily BW Duration</td><td>45</td><td>uint8</td><td>0..255</td><td>10s/LSB</td><td>0..2550s</td><td>18</td><td>180s</td><td>0 disables</td></tr>
+<tr><td>General</td><td>Coin Acceptor Fitted</td><td>46</td><td>uint8</td><td>0..1</td><td>bool</td><td>0/1</td><td>0</td><td>false</td><td></td></tr>
+<tr><td>Legacy RTC stamp metadata</td><td>Daily BW Year Offset</td><td>47</td><td>uint8</td><td>0..225</td><td>year-2000</td><td>2000..2225</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Legacy RTC stamp metadata</td><td>Trig BW Year Offset</td><td>48</td><td>uint8</td><td>0..225</td><td>year-2000</td><td>2000..2225</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Legacy RTC stamp metadata</td><td>Daily BW Month</td><td>49</td><td>uint8</td><td>1..12</td><td>month</td><td>1..12</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>Legacy RTC stamp metadata</td><td>Trig BW Month</td><td>50</td><td>uint8</td><td>1..12</td><td>month</td><td>1..12</td><td>0</td><td>0</td><td>legacy</td></tr>
+<tr><td>SensorBypass</td><td>SensByp Duration</td><td>51</td><td>uint8</td><td>0..255</td><td>100ms/LSB</td><td>0..25.5s</td><td>0</td><td>0s</td><td>0 disables</td></tr>
+<tr><td>SensorBypass</td><td>SensByp Period</td><td>52</td><td>uint8</td><td>0..255</td><td>minutes</td><td>0..255m</td><td>0</td><td>0m</td><td>0 disables</td></tr>
+<tr><td>Dispense</td><td>Deprecated Disp Avg Count</td><td>53</td><td>uint8</td><td>0..255</td><td>deprecated</td><td>unused</td><td>0</td><td>0</td><td>reserved/unused</td></tr>
+<tr><td>Water Circ</td><td>AutoCirc Duration</td><td>54</td><td>uint8</td><td>0..255</td><td>minutes</td><td>0..255m</td><td>0</td><td>0m</td><td>0 disables</td></tr>
+<tr><td>Water Circ</td><td>AutoCirc Period</td><td>55</td><td>uint8</td><td>0..255</td><td>10 minutes/LSB</td><td>0..2550m</td><td>0</td><td>0m</td><td>0 disables</td></tr>
+<tr><td>Water Circ</td><td>ManCirc Short</td><td>56</td><td>uint8</td><td>0..255</td><td>minutes</td><td>0..255m</td><td>1</td><td>1m</td><td>0 disables</td></tr>
+<tr><td>Water Circ</td><td>ManCirc Long</td><td>57</td><td>uint8</td><td>0..255</td><td>10 minutes/LSB</td><td>0..2550m</td><td>1</td><td>10m</td><td>0 disables</td></tr>
+<tr><td>Dispense</td><td>PreDispCircT</td><td>58</td><td>uint8</td><td>0..255</td><td>seconds</td><td>0..255s</td><td>0</td><td>0s</td><td></td></tr>
+<tr><td>Dispense</td><td>PreDispCircP</td><td>59</td><td>uint8</td><td>0..255</td><td>100 pulses/LSB</td><td>0..25500 pulses</td><td>0</td><td>0</td><td></td></tr>
+<tr><td>Dispense</td><td>PreDispPurgT</td><td>60</td><td>uint8</td><td>0..255</td><td>seconds</td><td>0..255s</td><td>0</td><td>0s</td><td></td></tr>
+<tr><td>Dispense</td><td>PreDispPurgP</td><td>61</td><td>uint8</td><td>0..255</td><td>100 pulses/LSB</td><td>0..25500 pulses</td><td>0</td><td>0</td><td></td></tr>
+<tr><td>Backwash</td><td>BW MAN Short</td><td>62</td><td>uint8</td><td>0..255</td><td>seconds</td><td>0..255s</td><td>15</td><td>15s</td><td></td></tr>
+<tr><td>Backwash</td><td>BW MAN Long</td><td>63</td><td>uint8</td><td>0..255</td><td>2 minutes/LSB</td><td>0..510m</td><td>15</td><td>30m</td><td></td></tr>
+<tr><td>SensorBypass</td><td>MAN Bypass Short</td><td>64</td><td>uint8</td><td>0..255</td><td>100ms/LSB</td><td>0..25.5s</td><td>50</td><td>5.0s</td><td></td></tr>
+<tr><td>SensorBypass</td><td>MAN Bypass Long</td><td>65</td><td>uint8</td><td>0..255</td><td>10s/LSB</td><td>0..2550s</td><td>6</td><td>60s</td><td></td></tr>
+<tr><td>Periodic Flush</td><td>DNF Rept Period</td><td>66</td><td>uint8</td><td>0..255</td><td>minutes</td><td>0..255m</td><td>60</td><td>60m</td><td></td></tr>
+<tr><td>Periodic Flush</td><td>DNF DispDurat</td><td>67</td><td>uint8</td><td>0..255</td><td>100ms/LSB</td><td>0..25.5s</td><td>20</td><td>2.0s</td><td></td></tr>
+<tr><td>Periodic Flush</td><td>PreFlshBeepDely</td><td>68</td><td>uint8</td><td>0..255</td><td>seconds</td><td>0..255s</td><td>15</td><td>15s</td><td></td></tr>
+<tr><td>Periodic Flush</td><td>Beep ON Time</td><td>69</td><td>uint8</td><td>0..255</td><td>10ms/LSB</td><td>0..2550ms</td><td>5</td><td>50ms</td><td></td></tr>
+<tr><td>Periodic Flush</td><td>Beep Period</td><td>70</td><td>uint8</td><td>0..255</td><td>100ms/LSB</td><td>0..25500ms</td><td>10</td><td>1000ms</td><td>nearest to requested 950ms</td></tr>
+<tr><td>Periodic Flush</td><td>Beep Count</td><td>71</td><td>uint8</td><td>0..255</td><td>count</td><td>0..255</td><td>0</td><td>0</td><td>0 disables beeping only</td></tr>
+<tr><td>Core</td><td>Magic</td><td>124-127</td><td>uint32</td><td>0..4294967295</td><td>signature</td><td>0x4D4A4344</td><td>0x4D4A4344</td><td>layout marker</td></tr>
+<tr><td>Dispensed Counters</td><td>DISP_APP</td><td>128-131</td><td>uint32</td><td>0..4294967295</td><td>count</td><td>0..4294967295</td><td>0</td><td>0</td><td></td></tr>
+<tr><td>Dispensed Counters</td><td>DISP_COIN</td><td>132-135</td><td>uint32</td><td>0..4294967295</td><td>count</td><td>0..4294967295</td><td>0</td><td>0</td><td></td></tr>
+<tr><td>Dispensed Counters</td><td>DISP_NFC</td><td>136-139</td><td>uint32</td><td>0..4294967295</td><td>count</td><td>0..4294967295</td><td>0</td><td>0</td><td></td></tr>
+<tr><td>Dispensed Counters</td><td>DISP_BYPASS</td><td>140-143</td><td>uint32</td><td>0..4294967295</td><td>count</td><td>0..4294967295</td><td>0</td><td>0</td><td></td></tr>
+</table>
+</body></html>

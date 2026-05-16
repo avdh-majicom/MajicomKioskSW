@@ -1,0 +1,355 @@
+digraph KioskEditorTree {
+  // KIOSKeditor == EEPROM editor module (KioskEepromEditor.*)
+  //
+  // This is a navigation tree (short SELECT transitions) plus key edit/commit behavior.
+  // Source of truth: KioskEepromEditor.cpp (shortSelect(), longSelect(), goBackOneLayer()).
+
+  graph [
+    rankdir=LR,
+    bgcolor="white",
+    labelloc="t",
+    label="KIOSKeditor (EEPROM Editor) Menu Tree",
+    labeljust="l",
+    forcelabels=true,
+    fontname="Helvetica"
+  ];
+
+  node [
+    shape=box,
+    style="rounded,filled",
+    fillcolor="#f7f7f7",
+    color="#333333",
+    fontname="Helvetica",
+    fontsize=10,
+    labeljust="l"
+  ];
+
+  edge [
+    color="#444444",
+    fontname="Helvetica",
+    fontsize=9,
+    labeljust="l",
+    arrowsize=0.8
+  ];
+
+  // Entry/exit
+  entry [label="Entry (Boot Only)\l- Auto: !magicOk OR HWID==0\l- Chord: SensorBypass + Backwash\l(Kiosk.ino)\l"];
+  exit  [label="Exit\l- Long BACK: watchdog reset\l- Editor never returns\l"];
+
+  // Layered nodes:
+  // Use an HTML label so the (LAYER_*) text appears above the "box" rather than inside it.
+  // This is more reliable than xlabel placement in rasterized outputs.
+  top   [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_TOP</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Top Menu<BR ALIGN="LEFT"/>&gt; PCB HW ID<BR ALIGN="LEFT"/>&gt; Water Disp Ctrl<BR ALIGN="LEFT"/>&gt; Dispensed Units<BR ALIGN="LEFT"/>&gt; KioskParm Edit<BR ALIGN="LEFT"/>&gt; NFC Token Mgt<BR ALIGN="LEFT"/>&gt; Re-init EEPROM</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  pcb   [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_PCB</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">PCB HW ID<BR ALIGN="LEFT"/>Edit: HWID<BR ALIGN="LEFT"/>Save: long SELECT -&gt; setHwId()</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // Water dispense control
+  wd_menu [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_WD_MENU</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Water Disp Ctrl<BR ALIGN="LEFT"/>Fields:<BR ALIGN="LEFT"/>- Timed Dispense<BR ALIGN="LEFT"/>- Pulse Count<BR ALIGN="LEFT"/>- Disp Ctrl Sel</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  wd_edit [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_WD_EDIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Water Disp Edit<BR ALIGN="LEFT"/>Edit cache: MeasuredProfile<BR ALIGN="LEFT"/>Save: long SELECT -&gt; storeMeasuredProfile()</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // Dispensed counters
+  disp_menu [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_DISPENSED_MENU</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Dispensed Units<BR ALIGN="LEFT"/>- App Disp<BR ALIGN="LEFT"/>- Coin Disp<BR ALIGN="LEFT"/>- NFC Token Disp<BR ALIGN="LEFT"/>- Bypassed Disp<BR ALIGN="LEFT"/>- TOTAL (RO)</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  disp_edit [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_DISPENSED_EDIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Dispensed Edit<BR ALIGN="LEFT"/>Edit: one counter<BR ALIGN="LEFT"/>Save: long SELECT -&gt; setDispenseCounter()</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // KioskParm category
+  kparm [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_KIOSKPARM_MENU</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">KioskParm Edit<BR ALIGN="LEFT"/>- Solenoid Config<BR ALIGN="LEFT"/>- KlaranUV Config<BR ALIGN="LEFT"/>- WaterTempSensor<BR ALIGN="LEFT"/>- CoinAcc Config<BR ALIGN="LEFT"/>- Backwash Config<BR ALIGN="LEFT"/>- RTC Config<BR ALIGN="LEFT"/>- NFC Params Mgt</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // Solenoid config
+  sol_menu [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_SOL_MENU</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Solenoid Config<BR ALIGN="LEFT"/>Pick solenoid:<BR ALIGN="LEFT"/>BackWashSol<BR ALIGN="LEFT"/>WaterSenseBypSol<BR ALIGN="LEFT"/>InletWaterSol<BR ALIGN="LEFT"/>WaterDispSol</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  sol_edit [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_SOL_PARAM_EDIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Solenoid Param Edit<BR ALIGN="LEFT"/>Params:<BR ALIGN="LEFT"/>StartPWM, HoldPWM,<BR ALIGN="LEFT"/>SwOnDelay(s)<BR ALIGN="LEFT"/>Save: long SELECT -&gt; storeSolenoidProfile()</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // Backwash config
+  bw_menu [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_BACKWASH_MENU</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Backwash Config<BR ALIGN="LEFT"/>- BW Duration<BR ALIGN="LEFT"/>- BW After N<BR ALIGN="LEFT"/>- BW DispCount<BR ALIGN="LEFT"/>- BW Daily Time<BR ALIGN="LEFT"/>- BW Daily Dur</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  bw_edit [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_BACKWASH_EDIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Backwash Edit<BR ALIGN="LEFT"/>Edit one field (cached)<BR ALIGN="LEFT"/>Save: long SELECT -&gt; setBackwash* / setDailyBackwash*</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // KlaranUV config
+  uv_menu [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_KLARAN_MENU</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">KlaranUV Config<BR ALIGN="LEFT"/>- UV OK Delay<BR ALIGN="LEFT"/>- UV MAX ON time</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  uv_edit [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_KLARAN_EDIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">KlaranUV Edit<BR ALIGN="LEFT"/>Edit cache: okDelay(10ms), maxOn(min)<BR ALIGN="LEFT"/>Save: long SELECT -&gt; setKlaranUv* (both)</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // Water temp sensor
+  wtemp [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_WATERTEMP_EDIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">WaterTempSensor<BR ALIGN="LEFT"/>Toggle T1/T2<BR ALIGN="LEFT"/>Save: long SELECT -&gt; setWaterTempSense()</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // Coin acceptor fitted
+  coinacc [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_COINACC_EDIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">CoinAcc Config<BR ALIGN="LEFT"/>Toggle fitted YES/NO<BR ALIGN="LEFT"/>Save: long SELECT -&gt; setCoinAcceptorFitted()</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // RTC
+  rtc [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_RTC_CONFIG</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">RTC Config<BR ALIGN="LEFT"/>DS3231 I2C (not EEPROM)<BR ALIGN="LEFT"/>- UP/DOWN edits cluster<BR ALIGN="LEFT"/>- SELECT advances cluster + writes RTC<BR ALIGN="LEFT"/>- BACK goes prev cluster / exits</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // NFC params
+  nfc_parm_menu [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_NFC_PARMS_MENU</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">NFC Params Mgt<BR ALIGN="LEFT"/>- NFC Init Delay<BR ALIGN="LEFT"/>- NFC Scan Duration<BR ALIGN="LEFT"/>- Inter NFC Delay</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  nfc_parm_edit [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_NFC_PARMS_EDIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">NFC Params Edit<BR ALIGN="LEFT"/>Edit ms values (cached)<BR ALIGN="LEFT"/>Save: long SELECT -&gt; setNfc* (all)</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // NFC token management
+  nfc_menu [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_NFC_MENU</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">NFC Token Mgt<BR ALIGN="LEFT"/>- Browse/Delete<BR ALIGN="LEFT"/>- NFC Add Token<BR ALIGN="LEFT"/>- NFC Del Token<BR ALIGN="LEFT"/>- Pack NFC Table<BR ALIGN="LEFT"/>- Del ALL Tokens</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  nfc_browse [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_NFC_BROWSE</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Browse/Delete<BR ALIGN="LEFT"/>Shows index + hash<BR ALIGN="LEFT"/>Short SELECT toggles Del? prompt<BR ALIGN="LEFT"/>Long SELECT deletes if confirmed</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  nfc_add [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_NFC_ADD</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">NFC Add Token<BR ALIGN="LEFT"/>Two-scan confirm<BR ALIGN="LEFT"/>Immediate write: addTokenHash()<BR ALIGN="LEFT"/>BACK exits immediately</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  nfc_del [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_NFC_DEL</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">NFC Del Token<BR ALIGN="LEFT"/>Two-scan confirm<BR ALIGN="LEFT"/>Immediate write: deleteTokenHash()<BR ALIGN="LEFT"/>BACK exits immediately</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+  nfc_pack [label="Pack NFC Table (action)\lImmediate: packTokenHashTable()\l(Blocking EEPROM op)\l"];
+  nfc_removeall [label="Del ALL Tokens (modal)\lPrompt YES/NO\lLong SELECT with YES:\lremoveAllTokens()\l"];
+
+  // Re-init EEPROM
+  reinit [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">LAYER_REINIT</FONT></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#f7f7f7" COLOR="#333333">
+          <TR><TD ALIGN="LEFT">Re-init EEPROM<BR ALIGN="LEFT"/>2-step safety:<BR ALIGN="LEFT"/>1) short SELECT -&gt; prompt active<BR ALIGN="LEFT"/>2) toggle YES + hold SELECT 10s<BR ALIGN="LEFT"/>Action: reinitializeToDefaults(true)</TD></TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  // Navigation edges (short SELECT)
+  entry -> top [label="enter editor"];
+  top -> pcb [label="SELECT"];
+  top -> wd_menu [label="SELECT"];
+  top -> disp_menu [label="SELECT"];
+  top -> kparm [label="SELECT"];
+  top -> nfc_menu [label="SELECT"];
+  top -> reinit [label="SELECT"];
+
+  wd_menu -> wd_edit [label="SELECT (field)"];
+  disp_menu -> disp_edit [label="SELECT (App/Coin/NFC/Bypass)"];
+
+  kparm -> sol_menu [label="SELECT"];
+  kparm -> uv_menu [label="SELECT"];
+  kparm -> wtemp [label="SELECT"];
+  kparm -> coinacc [label="SELECT"];
+  kparm -> bw_menu [label="SELECT"];
+  kparm -> rtc [label="SELECT"];
+  kparm -> nfc_parm_menu [label="SELECT"];
+
+  sol_menu -> sol_edit [label="SELECT (solenoid)"];
+  bw_menu -> bw_edit [label="SELECT (field)"];
+  uv_menu -> uv_edit [label="SELECT (field)"];
+  nfc_parm_menu -> nfc_parm_edit [label="SELECT (field)"];
+
+  nfc_menu -> nfc_browse [label="SELECT"];
+  nfc_menu -> nfc_add [label="SELECT"];
+  nfc_menu -> nfc_del [label="SELECT"];
+  nfc_menu -> nfc_pack [label="SELECT"];
+  nfc_menu -> nfc_removeall [label="SELECT"];
+
+  // Global exit
+  top -> exit [style=dashed, label="long BACK"];
+  pcb -> exit [style=dashed, label="long BACK"];
+  wd_menu -> exit [style=dashed, label="long BACK"];
+  wd_edit -> exit [style=dashed, label="long BACK"];
+  disp_menu -> exit [style=dashed, label="long BACK"];
+  disp_edit -> exit [style=dashed, label="long BACK"];
+  kparm -> exit [style=dashed, label="long BACK"];
+  sol_menu -> exit [style=dashed, label="long BACK"];
+  sol_edit -> exit [style=dashed, label="long BACK"];
+  bw_menu -> exit [style=dashed, label="long BACK"];
+  bw_edit -> exit [style=dashed, label="long BACK"];
+  uv_menu -> exit [style=dashed, label="long BACK"];
+  uv_edit -> exit [style=dashed, label="long BACK"];
+  wtemp -> exit [style=dashed, label="long BACK"];
+  coinacc -> exit [style=dashed, label="long BACK"];
+  rtc -> exit [style=dashed, label="long BACK"];
+  nfc_parm_menu -> exit [style=dashed, label="long BACK"];
+  nfc_parm_edit -> exit [style=dashed, label="long BACK"];
+  nfc_menu -> exit [style=dashed, label="long BACK"];
+  nfc_browse -> exit [style=dashed, label="long BACK"];
+  nfc_add -> exit [style=dashed, label="long BACK (suppressed; BACK exits to menu)"];
+  nfc_del -> exit [style=dashed, label="long BACK (suppressed; BACK exits to menu)"];
+  reinit -> exit [style=dashed, label="long BACK"];
+}

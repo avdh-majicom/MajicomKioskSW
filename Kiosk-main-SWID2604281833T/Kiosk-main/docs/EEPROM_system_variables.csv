@@ -1,0 +1,68 @@
+Category,Variable,EEPROM Address,Type,Stored Range,Units / LSB,Effective Range,Reset Default (raw),Reset Default (effective),Notes
+Core,HWID,0,uint8,0..255,raw,0..255,0,0,Hardware ID
+Dispense Profile,Measured Duration,1-2,uint16,0..65535,100ms/LSB,0..6553.5s,200,20.0s,ADDR_DISP_DURATION100MS
+Dispense Profile,Measured Pulses,3-4,uint16,0..65535,pulses,0..65535,2000,2000,ADDR_DISP_PULSES
+Dispense Profile,Dispense Mode,5,uint8,0..255,enum,"0=time,1=pulses",0,TIME,ADDR_DISP_MODESEL
+Solenoid BackWash,Start PWM,10,uint8,0..255,PWM,0..255,255,255,
+Solenoid BackWash,Hold PWM,11,uint8,0..255,PWM,0..255,130,130,
+Solenoid BackWash,SW Delay,12,uint8,0..255,seconds,0..255s,5,5s,
+Solenoid BackWash,Reserved0,13,uint8,0..255,raw,0..255,0,0,legacy
+Solenoid BackWash,Reserved1,int8 @14,int8,-128..127,raw,-128..127,0,0,legacy
+Solenoid SenseByp,Start PWM,15,uint8,0..255,PWM,0..255,255,255,
+Solenoid SenseByp,Hold PWM,16,uint8,0..255,PWM,0..255,130,130,
+Solenoid SenseByp,SW Delay,17,uint8,0..255,seconds,0..255s,5,5s,
+Solenoid SenseByp,Reserved0,18,uint8,0..255,raw,0..255,0,0,legacy
+Solenoid SenseByp,Reserved1,int8 @19,int8,-128..127,raw,-128..127,0,0,legacy
+Solenoid Inlet,Start PWM,20,uint8,0..255,PWM,0..255,255,255,
+Solenoid Inlet,Hold PWM,21,uint8,0..255,PWM,0..255,130,130,
+Solenoid Inlet,SW Delay,22,uint8,0..255,seconds,0..255s,5,5s,
+Solenoid Inlet,Reserved0,23,uint8,0..255,raw,0..255,0,0,legacy
+Solenoid Inlet,Reserved1,int8 @24,int8,-128..127,raw,-128..127,0,0,legacy
+Solenoid Dispense,Start PWM,25,uint8,0..255,PWM,0..255,128,128,
+Solenoid Dispense,Hold PWM,26,uint8,0..255,PWM,0..255,100,100,
+Solenoid Dispense,SW Delay,27,uint8,0..255,seconds,0..255s,5,5s,
+Solenoid Dispense,Reserved0,28,uint8,0..255,raw,0..255,0,0,legacy
+Solenoid Dispense,Reserved1,int8 @29,int8,-128..127,raw,-128..127,0,0,legacy
+Backwash,Deprecated BW Freq,30,uint8,0..255,deprecated,unused,0,0,reserved/unused
+Backwash,BW AutoDuration,31,uint8,0..255,5s/LSB,0..1275s,0,disabled,0 disables default-duration backwash
+Backwash,BW AutoAfter N,32,uint8,0..255,count,0..255,0,0,0 disables
+Backwash,BW Disp Counter,33-34,uint16,0..65535,count,0..65535,0,0,
+KlaranUV,UV OK Delay,37,uint8,0..255,10ms/LSB,0..2550ms,150,1500ms,
+KlaranUV,UV MAX ON Time,38,uint8,0..255,minutes,0..255m,60,60m,
+General,Water Temp Sensor,39,uint8,1..2 (clamped),enum,"1=T1,2=T2",1,T1,invalid values clamp to 1
+NFC Timing,NFC Init Delay,40,uint8,10..250 (clamped),1ms/LSB,10..250ms,100,100ms,NFC tags excluded per request
+NFC Timing,NFC Scan Duration,41,uint8,"1..250 (stored), 10..2500ms API",10ms/LSB,10..2500ms,15,150ms,
+NFC Timing,NFC Inter Delay,42,uint8,10..250 (clamped),1ms/LSB,10..250ms,50,50ms,
+Backwash Daily,Daily BW Time,43-44,uint16,0..1439 (clamped),minutes since midnight,00:00..23:59,60,01:00,
+Backwash Daily,Daily BW Duration,45,uint8,0..255,10s/LSB,0..2550s,18,180s,0 disables
+General,Coin Acceptor Fitted,46,uint8,0..1,bool,0/1,0,false,
+Legacy RTC stamp metadata,Daily BW Year Offset,47,uint8,0..225,year-2000,2000..2225,0,0,legacy
+Legacy RTC stamp metadata,Trig BW Year Offset,48,uint8,0..225,year-2000,2000..2225,0,0,legacy
+Legacy RTC stamp metadata,Daily BW Month,49,uint8,1..12,month,1..12,0,0,legacy
+Legacy RTC stamp metadata,Trig BW Month,50,uint8,1..12,month,1..12,0,0,legacy
+SensorBypass,SensByp Duration,51,uint8,0..255,100ms/LSB,0..25.5s,0,0s,0 disables
+SensorBypass,SensByp Period,52,uint8,0..255,minutes,0..255m,0,0m,0 disables
+Dispense,Deprecated Disp Avg Count,53,uint8,0..255,deprecated,unused,0,0,reserved/unused
+Water Circ,AutoCirc Duration,54,uint8,0..255,minutes,0..255m,0,0m,0 disables
+Water Circ,AutoCirc Period,55,uint8,0..255,10 minutes/LSB,0..2550m,0,0m,0 disables
+Water Circ,ManCirc Short,56,uint8,0..255,minutes,0..255m,1,1m,0 disables
+Water Circ,ManCirc Long,57,uint8,0..255,10 minutes/LSB,0..2550m,1,10m,0 disables
+Dispense,PreDispCircT,58,uint8,0..255,seconds,0..255s,0,0s,
+Dispense,PreDispCircP,59,uint8,0..255,100 pulses/LSB,0..25500 pulses,0,0,
+Dispense,PreDispPurgT,60,uint8,0..255,seconds,0..255s,0,0s,
+Dispense,PreDispPurgP,61,uint8,0..255,100 pulses/LSB,0..25500 pulses,0,0,
+Backwash,BW MAN Short,62,uint8,0..255,seconds,0..255s,15,15s,
+Backwash,BW MAN Long,63,uint8,0..255,2 minutes/LSB,0..510m,15,30m,
+SensorBypass,MAN Bypass Short,64,uint8,0..255,100ms/LSB,0..25.5s,50,5.0s,
+SensorBypass,MAN Bypass Long,65,uint8,0..255,10s/LSB,0..2550s,6,60s,
+Periodic Flush,DNF Rept Period,66,uint8,0..255,minutes,0..255m,60,60m,
+Periodic Flush,DNF DispDurat,67,uint8,0..255,100ms/LSB,0..25.5s,20,2.0s,
+Periodic Flush,PreFlshBeepDely,68,uint8,0..255,seconds,0..255s,15,15s,
+Periodic Flush,Beep ON Time,69,uint8,0..255,10ms/LSB,0..2550ms,5,50ms,
+Periodic Flush,Beep Period,70,uint8,0..255,100ms/LSB,0..25500ms,10,1000ms,nearest to requested 950ms
+Periodic Flush,Beep Count,71,uint8,0..255,count,0..255,0,0,0 disables beeping only
+Core,Magic,124-127,uint32,0..4294967295,signature,0x4D4A4344,0x4D4A4344,layout marker
+Dispensed Counters,DISP_APP,128-131,uint32,0..4294967295,count,0..4294967295,0,0,
+Dispensed Counters,DISP_COIN,132-135,uint32,0..4294967295,count,0..4294967295,0,0,
+Dispensed Counters,DISP_NFC,136-139,uint32,0..4294967295,count,0..4294967295,0,0,
+Dispensed Counters,DISP_BYPASS,140-143,uint32,0..4294967295,count,0..4294967295,0,0,

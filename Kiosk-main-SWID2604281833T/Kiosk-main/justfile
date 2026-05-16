@@ -1,0 +1,20 @@
+set export
+
+FQBN := "arduino:avr:mega"
+PORT := "COM3"
+BUILD_DIR := "build"
+SKETCH := "Kiosk.ino"
+
+build:
+  scripts/build.sh
+
+upload:
+  scripts/upload.sh
+
+build-upload:
+  scripts/build_upload.sh
+
+monitor:
+  scripts/monitor.sh
+
+# Note: when run by Codex in a sandbox, upload requires unsandboxed device access.

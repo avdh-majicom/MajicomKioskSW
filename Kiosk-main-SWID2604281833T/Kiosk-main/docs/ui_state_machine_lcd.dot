@@ -1,0 +1,287 @@
+digraph UiStateLCD {
+  // Template notes:
+  // - Outer state box uses node [shape=box, style="rounded"].
+  // - LCD text is an inner HTML table wrapped in <FONT FACE="Courier">.
+  // - Keep all text centered; avoid leading/trailing spaces.
+  // Example (copy/paste for new states):
+  // UI_EXAMPLE [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+  //   <TR><TD ALIGN="CENTER"><B>UI_EXAMPLE</B></TD></TR>
+  //   <TR><TD>
+  //     <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+  //       <TR><TD ALIGN="CENTER">Line 1</TD></TR>
+  //       <TR><TD ALIGN="CENTER">Line 2</TD></TR>
+  //       <TR><TD ALIGN="CENTER">Line 3</TD></TR>
+  //       <TR><TD ALIGN="CENTER">Line 4</TD></TR>
+  //     </TABLE>
+  //   </TD></TR>
+  // </TABLE></FONT>>];
+  rankdir=LR;
+  graph [overlap=false, splines=true];
+  node [shape=box, style="rounded"];
+
+  ASYNC_ERROR [label="System\nError", shape=ellipse, style="dashed"];
+  RESET_EVENT [label="Reset", shape=ellipse, style="dashed"];
+
+  UI_BOOT [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_BOOT</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">App Sales:00000</TD></TR>
+        <TR><TD ALIGN="CENTER">Coin Sales:00000</TD></TR>
+        <TR><TD ALIGN="CENTER">NFC Tag:00000</TD></TR>
+        <TR><TD ALIGN="CENTER">Bypass:00000</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_WELCOME [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_WELCOME</B></TD></TR>
+    <TR><TD ALIGN="CENTER"><I>Normal</I></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Majicom Welcome!</TD></TR>
+        <TR><TD ALIGN="CENTER">Press button</TD></TR>
+        <TR><TD ALIGN="CENTER">to start</TD></TR>
+        <TR><TD ALIGN="CENTER">KSh10/500ml</TD></TR>
+      </TABLE>
+    </TD></TR>
+    <TR><TD ALIGN="CENTER"><I>Override</I></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Majicom Welcome!</TD></TR>
+        <TR><TD ALIGN="CENTER">================</TD></TR>
+        <TR><TD ALIGN="CENTER">Press button</TD></TR>
+        <TR><TD ALIGN="CENTER">to start</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_PAY_PROMPT [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_PAY_PROMPT</B></TD></TR>
+    <TR><TD ALIGN="CENTER"><I>APP&amp;Coin</I></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Buy with coins</TD></TR>
+        <TR><TD ALIGN="CENTER">or the Majicom</TD></TR>
+        <TR><TD ALIGN="CENTER">mobile/cell app</TD></TR>
+        <TR><TD ALIGN="CENTER">price:Ksh10/0.5l</TD></TR>
+      </TABLE>
+    </TD></TR>
+    <TR><TD ALIGN="CENTER"><I>APP only</I></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Buy with the</TD></TR>
+        <TR><TD ALIGN="CENTER">Majicom mobile/</TD></TR>
+        <TR><TD ALIGN="CENTER">cell phone app</TD></TR>
+        <TR><TD ALIGN="CENTER">price:Ksh10/0.5l</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_PAY_FAILED [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_PAY_FAILED</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Payment failed!</TD></TR>
+        <TR><TD ALIGN="CENTER">Press button to</TD></TR>
+        <TR><TD ALIGN="CENTER">attempt payment</TD></TR>
+        <TR><TD ALIGN="CENTER">again</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_PAY_COIN_OK [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_PAY_COIN_OK</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Thank you!</TD></TR>
+        <TR><TD ALIGN="CENTER">Your coin</TD></TR>
+        <TR><TD ALIGN="CENTER">payment has</TD></TR>
+        <TR><TD ALIGN="CENTER">been processed</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_PAY_APP_OK [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_PAY_APP_OK</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Thank you!</TD></TR>
+        <TR><TD ALIGN="CENTER">Your NFC Mobile</TD></TR>
+        <TR><TD ALIGN="CENTER">App payment has</TD></TR>
+        <TR><TD ALIGN="CENTER">been processed</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_PAY_TOKEN_OK [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_PAY_TOKEN_OK</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Thank you!</TD></TR>
+        <TR><TD ALIGN="CENTER">Your NFC Token</TD></TR>
+        <TR><TD ALIGN="CENTER">payment has</TD></TR>
+        <TR><TD ALIGN="CENTER">been processed</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_PAY_TOKEN_BAD [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_PAY_TOKEN_BAD</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Invalid Token!</TD></TR>
+        <TR><TD ALIGN="CENTER">Not accepted</TD></TR>
+        <TR><TD ALIGN="CENTER">on this Kiosk</TD></TR>
+        <TR><TD ALIGN="CENTER">Code:XXXXXXXX</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_OVERRIDE [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_OVERRIDE</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Thank you for</TD></TR>
+        <TR><TD ALIGN="CENTER">using this</TD></TR>
+        <TR><TD ALIGN="CENTER">** Majicom **</TD></TR>
+        <TR><TD ALIGN="CENTER">Water Kiosk!</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_DISP_RDY [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_DISP_RDY</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Place your</TD></TR>
+        <TR><TD ALIGN="CENTER">container under</TD></TR>
+        <TR><TD ALIGN="CENTER">the nozzle and</TD></TR>
+        <TR><TD ALIGN="CENTER">press the button</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_DISPENSING [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_DISPENSING</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Dispensing clean</TD></TR>
+        <TR><TD ALIGN="CENTER">pure water...</TD></TR>
+        <TR><TD ALIGN="CENTER">&#160;</TD></TR>
+        <TR><TD ALIGN="CENTER">########## 99%</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_DISP_DONE [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_DISP_DONE</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Dispensing done</TD></TR>
+        <TR><TD ALIGN="CENTER">Thank you!</TD></TR>
+        <TR><TD ALIGN="CENTER">Please come back</TD></TR>
+        <TR><TD ALIGN="CENTER">again soon!</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_TIMEOUT [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_TIMEOUT</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Sorry!</TD></TR>
+        <TR><TD ALIGN="CENTER">&#160;</TD></TR>
+        <TR><TD ALIGN="CENTER">your transaction</TD></TR>
+        <TR><TD ALIGN="CENTER">has timed out</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_OUT_OF_SERVICE [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_OUT_OF_SERVICE</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Sorry! We're not</TD></TR>
+        <TR><TD ALIGN="CENTER">dispensing now</TD></TR>
+        <TR><TD ALIGN="CENTER">Purifying water</TD></TR>
+        <TR><TD ALIGN="CENTER">Come Back Soon !!</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_DARK_MODE_IN [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_DARK_MODE_IN</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Entering</TD></TR>
+        <TR><TD ALIGN="CENTER">Dark Mode</TD></TR>
+        <TR><TD ALIGN="CENTER">----------------</TD></TR>
+        <TR><TD ALIGN="CENTER">Countdown: nn s</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_DARK_MODE_OUT [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_DARK_MODE_OUT</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Exiting</TD></TR>
+        <TR><TD ALIGN="CENTER">Dark Mode</TD></TR>
+        <TR><TD ALIGN="CENTER">----------------</TD></TR>
+        <TR><TD ALIGN="CENTER">Countdown: nn s</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_ERROR [label=<<FONT FACE="Courier"><TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>UI_ERROR</B></TD></TR>
+    <TR><TD>
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR><TD ALIGN="CENTER">Not Dispensing</TD></TR>
+        <TR><TD ALIGN="CENTER">Purifying Water</TD></TR>
+        <TR><TD ALIGN="CENTER">Come Back Soon</TD></TR>
+        <TR><TD ALIGN="CENTER">Code:nnnn</TD></TR>
+      </TABLE>
+    </TD></TR>
+  </TABLE></FONT>>];
+
+  UI_BOOT -> UI_WELCOME [label="button press or long delay"];
+
+  UI_WELCOME -> UI_OUT_OF_SERVICE [label="dispense not ok"];
+  UI_WELCOME -> UI_PAY_PROMPT [label="press+release (normal)"];
+  UI_WELCOME -> UI_DISP_RDY [label="press+release (override)"];
+  UI_WELCOME -> UI_DARK_MODE_IN [label="hold in override, switch to normal, release"];
+  UI_WELCOME -> UI_WELCOME [label="5s refresh"];
+
+  UI_PAY_PROMPT -> UI_PAY_COIN_OK [label="payment ok: coin"];
+  UI_PAY_PROMPT -> UI_PAY_TOKEN_OK [label="payment ok: token"];
+  UI_PAY_PROMPT -> UI_PAY_APP_OK [label="payment ok: app"];
+  UI_PAY_PROMPT -> UI_PAY_FAILED [label="payment failed"];
+  UI_PAY_PROMPT -> UI_PAY_TOKEN_BAD [label="unknown token"];
+  UI_PAY_PROMPT -> UI_WELCOME [label="medium delay"];
+  UI_PAY_PROMPT -> UI_DISP_RDY [label="override active"];
+
+  UI_PAY_FAILED -> UI_PAY_PROMPT [label="button press"];
+  UI_PAY_FAILED -> UI_WELCOME [label="medium delay"];
+
+  UI_PAY_COIN_OK -> UI_DISP_RDY [label="short delay"];
+  UI_PAY_APP_OK -> UI_DISP_RDY [label="short delay"];
+  UI_PAY_TOKEN_OK -> UI_DISP_RDY [label="short delay"];
+  UI_PAY_TOKEN_BAD -> UI_WELCOME [label="button press or medium delay"];
+
+  UI_OVERRIDE -> UI_DISP_RDY [label="short delay"];
+  UI_DARK_MODE_IN -> UI_DARK_MODE_OUT [label="front button release (while dark)"];
+  UI_DARK_MODE_OUT -> UI_DARK_MODE_IN [label="front button release"];
+  UI_DARK_MODE_OUT -> RESET_EVENT [label="short countdown complete"];
+  UI_DISP_RDY -> UI_DISPENSING [label="button press"];
+  UI_DISP_RDY -> UI_TIMEOUT [label="long delay"];
+
+  UI_DISPENSING -> UI_DISP_DONE [label="dispense done"];
+  UI_DISPENSING -> UI_DISPENSING [label="1s refresh"];
+  UI_DISP_DONE -> UI_WELCOME [label="button press or short delay"];
+
+  UI_TIMEOUT -> UI_WELCOME [label="short delay"];
+  ASYNC_ERROR -> UI_ERROR [label="async error"];
+  UI_OUT_OF_SERVICE -> UI_WELCOME [label="dispense ok"];
+}

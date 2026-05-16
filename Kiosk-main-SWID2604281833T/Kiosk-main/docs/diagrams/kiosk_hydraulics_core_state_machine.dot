@@ -1,0 +1,38 @@
+digraph KIOSK_HYD_CORE {
+  rankdir=LR;
+  graph [fontsize=10, fontname="Helvetica", labelloc=t, label="Hydraulics Core: Dispense/UV + Backwash Overlay"];
+  node  [shape=box, style="rounded", fontsize=10, fontname="Helvetica"];
+  edge  [fontsize=9, fontname="Helvetica"];
+
+  subgraph cluster_dispense {
+    label="Dispense + UV (KioskHydraulics)";
+    color="#888888";
+    style="rounded";
+
+    D_IDLE [label="IDLE"];
+    D_UV_WAIT [label="UV_WAIT\n(100ms precheck)"];
+    D_DISP [label="DISPENSE"];
+    D_UV_POST [label="UV_POST\n(100ms post-run)"];
+
+    D_IDLE -> D_UV_WAIT [label="dispense edge\nAND waterLevel>0\nAND profile enabled"];
+    D_UV_WAIT -> D_DISP [label="100ms elapsed\nAND UV_OK=HIGH"];
+    D_UV_WAIT -> D_IDLE [label="100ms elapsed\nAND UV_OK=LOW\n(latch ERR_UV_NOT_OK)"];
+    D_DISP -> D_UV_POST [label="target reached\n(time or pulse)"];
+    D_DISP -> D_IDLE [label="UV_OK drops LOW\n(latch ERR_UV_NOT_OK)"];
+    D_UV_POST -> D_IDLE [label="100ms elapsed"];
+  }
+
+  subgraph cluster_backwash {
+    label="Backwash Overlay (runs in parallel)";
+    color="#888888";
+    style="rounded";
+
+    BW_IDLE [label="BW_IDLE"];
+    BW_ACTIVE [label="BW_ACTIVE"];
+
+    BW_IDLE -> BW_ACTIVE [label="backwash request\nAND eligible\n(NORMAL: level>1,\nOVERRIDE: level>0)"];
+    BW_ACTIVE -> BW_IDLE [label="request while active\n(toggle stop)"];
+    BW_ACTIVE -> BW_IDLE [label="duration elapsed"];
+    BW_ACTIVE -> BW_IDLE [label="waterLevel<1"];
+  }
+}

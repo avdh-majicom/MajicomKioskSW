@@ -1,0 +1,40 @@
+digraph HydraulicsStateMachine {
+  rankdir=LR;
+  graph [overlap=false, splines=true];
+  node [shape=box, style="rounded"];
+
+  subgraph cluster_dispense {
+    label="Dispense region";
+    color="#4a4a4a";
+
+    ST_IDLE [label="ST_IDLE"];
+    ST_DISPENSE [label="ST_DISPENSE\n(dispense on)"];
+
+    ST_IDLE -> ST_DISPENSE [label="dispenseStart edge &&\nwaterLevel > 0"];
+    ST_DISPENSE -> ST_IDLE [label="elapsed >= 5s"];
+  }
+
+  subgraph cluster_backwash {
+    label="Backwash region";
+    color="#4a4a4a";
+
+    BW_OFF [label="BW_OFF"];
+    BW_ON [label="BW_ON\n(backwash on)"];
+
+    BW_OFF -> BW_ON [label="requestBackwash &&\n(waterLevel > 1 ||\n(override && waterLevel > 0))"];
+    BW_ON -> BW_OFF [label="requestBackwash (cancel) ||\nelapsed >= 5s ||\nwaterLevel < 1"];
+  }
+
+  subgraph cluster_fill {
+    label="Fill region";
+    color="#4a4a4a";
+
+    FILL_OFF [label="FILL_OFF"];
+    FILL_ON [label="FILL_ON\n(inlet on)"];
+
+    FILL_OFF -> FILL_ON [label="(autoRefill ||\nmanualLatch) &&\n!backwashActive"];
+    FILL_ON -> FILL_OFF [label="!autoRefill &&\n!manualLatch ||\nbackwashActive"];
+  }
+
+  fill_notes [shape=note, label="autoRefill latch:\n- level < 2 -> ON\n- level == 3 -> OFF\nmanualLatch:\n- set by inletRequested unless FULL/backwash\n- cleared at FULL"];
+}

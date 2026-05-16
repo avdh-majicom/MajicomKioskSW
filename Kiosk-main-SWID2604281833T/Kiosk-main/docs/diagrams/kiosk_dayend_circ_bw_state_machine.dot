@@ -1,0 +1,28 @@
+digraph KIOSK_DAYEND {
+  rankdir=LR;
+  graph [fontsize=10, fontname="Helvetica", labelloc=t, label="DayEnd Circ+BW Sequence"];
+  node  [shape=box, style="rounded", fontsize=10, fontname="Helvetica"];
+  edge  [fontsize=9, fontname="Helvetica"];
+
+  IDLE [label="IDLE"];
+  QUEUED [label="QUEUED\n(req pending)"];
+  CIRC_WAIT [label="CIRC_WAIT\n(wait level>1)"];
+  CIRC_ON [label="CIRC_ON"];
+  BW_WAIT [label="BW_WAIT\n(wait level>1)"];
+  BW_ON [label="BW_ON"];
+  DONE [label="DONE/CLEANUP"];
+
+  IDLE -> QUEUED [label="Chord: hold BACKWASH,\nhold CONT_CIRC,\nrelease BACKWASH,\nrelease CONT_CIRC\nAND override mode"];
+
+  QUEUED -> CIRC_WAIT [label="EoD Circ duration > 0"];
+  QUEUED -> BW_WAIT [label="EoD Circ duration = 0\nAND EoD BW duration > 0"];
+  QUEUED -> DONE [label="both durations = 0"];
+
+  CIRC_WAIT -> CIRC_ON [label="waterLevel>1"];
+  CIRC_ON -> BW_WAIT [label="circ timer complete\n(or circulation terminated)"];
+
+  BW_WAIT -> BW_ON [label="waterLevel>1\nstart timed backwash"];
+  BW_ON -> DONE [label="backwash completes"];
+
+  DONE -> IDLE [label="clear DayEnd state;\nrestore inlet demand if level<3"];
+}

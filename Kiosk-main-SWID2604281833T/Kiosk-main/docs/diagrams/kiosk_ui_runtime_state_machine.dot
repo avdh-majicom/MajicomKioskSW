@@ -1,0 +1,133 @@
+digraph KIOSK_UI_RUNTIME {
+  rankdir=LR;
+  graph [
+    fontsize=14,
+    fontname="Helvetica",
+    labelloc=t,
+    label="Kiosk Runtime UI Operation",
+    pad=0.3,
+    nodesep=0.45,
+    ranksep=0.8,
+    splines=polyline,
+    bgcolor="white"
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontsize=10,
+    fontname="Helvetica",
+    color="#475569",
+    fillcolor="#F8FAFC",
+    margin="0.16,0.10"
+  ];
+  edge [
+    fontsize=9,
+    fontname="Helvetica",
+    color="#334155",
+    arrowsize=0.75,
+    penwidth=1.2
+  ];
+
+  START [shape=circle, label="", width=0.18, fixedsize=true, color="#0F172A", fillcolor="#0F172A"];
+  RESET_EVENT [shape=oval, label="RESET", color="#6366F1", fillcolor="#EEF2FF"];
+  ERROR_GATE [shape=note, label="Global transition:\nerrorActive() from\nmost non-dark states", color="#DC2626", fillcolor="#FEE2E2"];
+
+  subgraph cluster_entry {
+    label="Entry / Idle";
+    style="rounded,filled";
+    color="#93C5FD";
+    fillcolor="#EFF6FF";
+
+    UI_BOOT [label="UI_BOOT\nshow counters"];
+    UI_WELCOME [label="UI_WELCOME\nattract / gesture hub"];
+    UI_OUT_OF_SERVICE [label="UI_OUT_OF_SERVICE\ndispense unavailable"];
+  }
+
+  subgraph cluster_payment {
+    label="Payment / Override";
+    style="rounded,filled";
+    color="#86EFAC";
+    fillcolor="#F0FDF4";
+
+    UI_PAY_PROMPT [label="UI_PAY_PROMPT\ncollect payment"];
+    UI_PAY_FAILED [label="UI_PAY_FAILED\nretry or timeout"];
+    UI_PAY_COIN_OK [label="UI_PAY_COIN_OK\ncount DISP_COIN"];
+    UI_PAY_APP_OK [label="UI_PAY_APP_OK\ncount DISP_APP"];
+    UI_PAY_TOKEN_OK [label="UI_PAY_TOKEN_OK\ncount DISP_NFC"];
+    UI_PAY_TOKEN_BAD [label="UI_PAY_TOKEN_BAD\nshow bad token code"];
+    UI_OVERRIDE [label="UI_OVERRIDE\ncount DISP_BYPASS"];
+  }
+
+  subgraph cluster_dispense {
+    label="Dispense";
+    style="rounded,filled";
+    color="#FCD34D";
+    fillcolor="#FFFBEB";
+
+    UI_DISP_RDY [label="UI_DISP_RDY\nwaiting for front/rear press"];
+    UI_DISPENSING [label="UI_DISPENSING\nprogress / active dispense"];
+    UI_DISP_DONE [label="UI_DISP_DONE\ncompletion message"];
+    UI_TIMEOUT [label="UI_TIMEOUT\ntransaction timed out"];
+  }
+
+  subgraph cluster_dark {
+    label="Dark Mode";
+    style="rounded,filled";
+    color="#C4B5FD";
+    fillcolor="#F5F3FF";
+
+    UI_DARK_MODE_IN [label="UI_DARK_MODE_IN\n60s entry + 2s fade"];
+    UI_DARK_MODE_OUT [label="UI_DARK_MODE_OUT\nhold 8s to reset"];
+  }
+
+  subgraph cluster_error {
+    label="Error";
+    style="rounded,filled";
+    color="#FCA5A5";
+    fillcolor="#FEF2F2";
+
+    UI_ERROR [label="UI_ERROR\n1s flashing error loop"];
+  }
+
+  START -> UI_BOOT [label="startup"];
+  UI_BOOT -> UI_WELCOME [label="front press/release\nor 60s"];
+
+  UI_WELCOME -> UI_PAY_PROMPT [label="front press/release\n(normal)"];
+  UI_WELCOME -> UI_OVERRIDE [label="front release with\noverride ON"];
+  UI_WELCOME -> UI_DARK_MODE_IN [label="press in override,\nrelease after switch\nback to normal"];
+  UI_WELCOME -> UI_OUT_OF_SERVICE [label="dispenseNotOk &&\n!override &&\n!darkModeArmed"];
+  UI_WELCOME -> UI_WELCOME [label="5s refresh"];
+
+  UI_PAY_PROMPT -> UI_OVERRIDE [label="override becomes active"];
+  UI_PAY_PROMPT -> UI_PAY_COIN_OK [label="coin payment ok"];
+  UI_PAY_PROMPT -> UI_PAY_APP_OK [label="mobile app payment ok"];
+  UI_PAY_PROMPT -> UI_PAY_TOKEN_OK [label="token payment ok"];
+  UI_PAY_PROMPT -> UI_PAY_TOKEN_BAD [label="invalid token"];
+  UI_PAY_PROMPT -> UI_PAY_FAILED [label="payment failed"];
+  UI_PAY_PROMPT -> UI_WELCOME [label="15s timeout"];
+
+  UI_PAY_FAILED -> UI_PAY_PROMPT [label="front press"];
+  UI_PAY_FAILED -> UI_WELCOME [label="15s timeout"];
+  UI_PAY_TOKEN_BAD -> UI_WELCOME [label="front press or 3s"];
+
+  UI_PAY_COIN_OK -> UI_DISP_RDY [label="2s"];
+  UI_PAY_APP_OK -> UI_DISP_RDY [label="2s"];
+  UI_PAY_TOKEN_OK -> UI_DISP_RDY [label="2s"];
+  UI_OVERRIDE -> UI_DISP_RDY [label="2s"];
+
+  UI_DISP_RDY -> UI_DISPENSING [label="front or rear press"];
+  UI_DISP_RDY -> UI_TIMEOUT [label="60s"];
+  UI_DISPENSING -> UI_DISP_DONE [label="dispense complete\nor profile limit reached"];
+  UI_DISP_DONE -> UI_WELCOME [label="front press or 2s"];
+  UI_TIMEOUT -> UI_WELCOME [label="3s"];
+
+  UI_OUT_OF_SERVICE -> UI_WELCOME [label="dispense restored\nor override ON"];
+
+  UI_DARK_MODE_IN -> UI_DARK_MODE_IN [label="front press during\n60s countdown:\nskip to dark"];
+  UI_DARK_MODE_IN -> UI_DARK_MODE_OUT [label="front press when\nfully dark"];
+  UI_DARK_MODE_OUT -> UI_DARK_MODE_IN [label="release before 8s"];
+  UI_DARK_MODE_OUT -> RESET_EVENT [label="hold front 8s"];
+
+  ERROR_GATE -> UI_ERROR [style=dashed, label="enter UI_ERROR"];
+  UI_ERROR -> UI_ERROR [label="self-refresh every 1s"];
+}

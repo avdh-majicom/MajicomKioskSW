@@ -1,0 +1,95 @@
+digraph EEPROM_EDITOR_NAVIGATION {
+  rankdir=LR;
+  splines=ortho;
+  nodesep=0.45;
+  ranksep=0.6;
+  fontname="Helvetica";
+  node [shape=box, style="rounded,filled", fillcolor="#F8FAFC", color="#334155", fontname="Helvetica", fontsize=10];
+  edge [color="#475569", arrowsize=0.7, fontname="Helvetica", fontsize=9];
+
+  Boot [label="Boot"];
+  AutoEntry [label="Auto Entry\nif EEPROM magic invalid\nor HWID == 0"];
+  ChordEntry [label="Manual Entry Chord\nSensor Bypass + Backwash"];
+  EditorTop [label="EEPROM Editor Top Menu"];
+
+  subgraph cluster_top {
+    label="Top Menu";
+    color="#CBD5E1";
+    style="rounded";
+
+    PCB [label="PCB HW ID"];
+    Disp [label="Dispensed Units"];
+    KParm [label="Kiosk Parm Edit"];
+    HParm [label="Hydra Parm Edit"];
+    NFC [label="NFC Token Mgt"];
+    Reinit [label="Re-init EEPROM"];
+  }
+
+  subgraph cluster_kparm {
+    label="Kiosk Parm Edit";
+    color="#CBD5E1";
+    style="rounded";
+
+    Sol [label="Solenoid Config"];
+    UV [label="KlaranUV Config"];
+    Temp [label="WaterTempSensor"];
+    Coin [label="CoinAcc Config"];
+    RTC [label="RTC Config"];
+    NfcParms [label="NFC Params Mgt"];
+  }
+
+  subgraph cluster_hparm {
+    label="Hydra Parm Edit";
+    color="#CBD5E1";
+    style="rounded";
+
+    BW [label="Backwash Config"];
+    SB [label="SensBypass Edit"];
+    WC [label="Water Circ Ctrl"];
+    WD [label="Water Disp Ctrl"];
+    PF [label="Periodic Flush"];
+  }
+
+  subgraph cluster_nfc {
+    label="NFC Token Mgt";
+    color="#CBD5E1";
+    style="rounded";
+
+    Browse [label="Browse/Delete"];
+    Add [label="NFC Add Token"];
+    Del [label="NFC Del Token"];
+    Pack [label="Pack NFC Table"];
+    DelAll [label="Del ALL Tokens"];
+  }
+
+  Boot -> AutoEntry;
+  Boot -> ChordEntry;
+  AutoEntry -> EditorTop;
+  ChordEntry -> EditorTop;
+
+  EditorTop -> PCB;
+  EditorTop -> Disp;
+  EditorTop -> KParm;
+  EditorTop -> HParm;
+  EditorTop -> NFC;
+  EditorTop -> Reinit;
+
+  KParm -> Sol;
+  KParm -> UV;
+  KParm -> Temp;
+  KParm -> Coin;
+  KParm -> RTC;
+  KParm -> NfcParms;
+
+  HParm -> BW;
+  HParm -> SB;
+  HParm -> WC;
+  HParm -> WD;
+  HParm -> PF;
+
+  NFC -> Browse;
+  NFC -> Add;
+  NFC -> Del;
+  NFC -> Pack;
+  NFC -> DelAll;
+}
