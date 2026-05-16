@@ -93,7 +93,7 @@ require unsandboxed device access.
 
 ## Key Docs
 
-- [Architecture](docs/architecture.md)
-- [System Operation](docs/SYSTEM_OPERATION.md)
-- [EEPROM Runtime Usage Summary](docs/EEPROM_RUNTIME_USAGE_SUMMARY.md)
-- [EEPROM Editor](docs/eeprom_editor.md)
+- [Architecture](Kiosk-main-SWID2604281833T/Kiosk-main/docs/architecture.md)
+- [System Operation](Kiosk-main-SWID2604281833T/Kiosk-main/docs/SYSTEM_OPERATION.md)
+- [EEPROM Runtime Usage Summary](Kiosk-main-SWID2604281833T/Kiosk-main/docs/EEPROM_RUNTIME_USAGE_SUMMARY.md)
+- [EEPROM Editor](Kiosk-main-SWID2604281833T/Kiosk-main/docs/eeprom_editor.md)
