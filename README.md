@@ -1,4 +1,4 @@
-# Majicom Kiosk Firmware
+# Majicom Kiosk Embedded Software
 
 Firmware for the Majicom water kiosk, targeting the Arduino MEGA 2560.
 
